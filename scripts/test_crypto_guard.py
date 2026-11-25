@@ -13,13 +13,14 @@ start = text.index('start_crypto_services() {')
 end = text.index('\n}\n', start) + 3
 func = text[start:end]
 rows = []
-for release, system_patch, vendor_patch, reset_fails, allowed in [
-    ('17', '2026-10-01', '2026-10-01', False, True),
-    ('99.87.36', '2099-12-31', '2099-12-31', False, False),
-    ('17', '2026-11-01', '2026-10-01', False, False),
-    ('17', '2026-10-01', '', False, False),
-    ('16', '2026-10-01', '2026-10-01', False, False),
-    ('17', '2026-10-01', '2026-10-01', True, False),
+for release, system_patch, vendor_patch, boot_patch, reset_fails, allowed, expected_boot in [
+    ('17', '2026-10-01', '2026-10-01', '2099-12-31', False, True, '2026-10-01'),
+    ('17', '2026-11-01', '2026-09-01', '2026-08-01', False, True, '2026-08-01'),
+    ('99.87.36', '2099-12-31', '2099-12-31', '2099-12-31', False, False, None),
+    ('17', '2099-12-31', '2026-10-01', '2099-12-31', False, False, None),
+    ('17', '2026-10-01', '', '2099-12-31', False, False, None),
+    ('16', '2026-10-01', '2026-10-01', '2099-12-31', False, False, None),
+    ('17', '2026-10-01', '2026-10-01', '2099-12-31', True, False, None),
 ]:
     script = '''
 getprop() {
@@ -41,14 +42,15 @@ wait_for_service() { return 0; }
 setprop_bin=resetprop
 ''' + func + '\nstart_crypto_services\n'
     env = {'OS_RELEASE': release, 'SYSTEM_PATCH': system_patch, 'VENDOR_PATCH': vendor_patch,
-           'RESET_FAILS': '1' if reset_fails else '0', 'BOOT_PATCH': '2099-12-31'}
+           'RESET_FAILS': '1' if reset_fails else '0', 'BOOT_PATCH': boot_patch}
     proc = subprocess.run(['/bin/sh'], input=script, env=env, capture_output=True, text=True)
     launched = 'SETPROP ctl.start vendor.keymint-qti' in proc.stdout
     assert launched == allowed and (proc.returncode == 0) == allowed, proc
     if allowed:
-        assert 'RESETPROP ro.bootimage.build.version.security_patch 2026-10-01' in proc.stdout
+        assert f'RESETPROP ro.bootimage.build.version.security_patch {expected_boot}' in proc.stdout
     rows.append({'release': release, 'system_patch': system_patch,
-                 'vendor_patch': vendor_patch, 'reset_fails': reset_fails,
+                 'vendor_patch': vendor_patch, 'boot_patch': boot_patch,
+                 'reset_fails': reset_fails,
                  'keymint_started': launched, 'passed': True})
 args.report.write_text(json.dumps(rows, indent=2))
 print(json.dumps(rows, indent=2))
