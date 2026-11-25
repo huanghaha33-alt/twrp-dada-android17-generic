@@ -34,7 +34,7 @@ def fields(data):
 
 with zipfile.ZipFile(PACKAGE) as z:
  meta=dict(line.split('=',1) for line in z.read('META-INF/com/android/metadata').decode().splitlines() if '=' in line)
- assert meta['pre-device']=='dada' and '/dada_eea_global/' in meta['post-build'] and meta['post-sdk-level']=='37'
+ assert meta['pre-device']=='dada' and '/dada_eea/dada:' in meta['post-build'] and meta['post-sdk-level']=='37'
  info=z.getinfo('payload.bin');assert info.compress_type==zipfile.ZIP_STORED
  with PACKAGE.open('rb') as f:
   f.seek(info.header_offset);local=f.read(30);assert local[:4]==b'PK\x03\x04'
