@@ -17,9 +17,9 @@ image=out/target/product/sm8750_thales/recovery.img
 python3 "$project/scripts/inspect_image.py" "$image" \
   --report "$project/artifacts/image-inspection.json" \
   --blob-provenance "$build_root/port-blob-provenance.json"
-cp "$image" "$project/artifacts/twrp-dada-OS4.0.0.11-exp1.img"
+cp "$image" "$project/artifacts/twrp-dada-OS4.0.8.0-XOCEUXM-exp1.img"
 cp bootable/recovery/NOTICE "$project/artifacts/TWRP-NOTICE.txt"
 cp "$project/README.txt" "$project/artifacts/README.txt"
 cd "$project/artifacts"
-sha256sum twrp-dada-OS4.0.0.11-exp1.img > SHA256SUMS
+sha256sum twrp-dada-OS4.0.8.0-XOCEUXM-exp1.img > SHA256SUMS
 printf 'NOT_TESTED: boot, touch, decryption, MTP, Wi-Fi, backup/restore, OTA.\n' > runtime-results.txt

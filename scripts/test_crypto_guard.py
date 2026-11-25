@@ -14,12 +14,12 @@ end = text.index('\n}\n', start) + 3
 func = text[start:end]
 rows = []
 for release, system_patch, vendor_patch, reset_fails, allowed in [
-    ('17', '2026-09-01', '2026-09-01', False, True),
+    ('17', '2026-10-01', '2026-10-01', False, True),
     ('99.87.36', '2099-12-31', '2099-12-31', False, False),
-    ('17', '2026-10-01', '2026-09-01', False, False),
-    ('17', '2026-09-01', '', False, False),
-    ('16', '2026-09-01', '2026-09-01', False, False),
-    ('17', '2026-09-01', '2026-09-01', True, False),
+    ('17', '2026-11-01', '2026-10-01', False, False),
+    ('17', '2026-10-01', '', False, False),
+    ('16', '2026-10-01', '2026-10-01', False, False),
+    ('17', '2026-10-01', '2026-10-01', True, False),
 ]:
     script = '''
 getprop() {
@@ -46,7 +46,7 @@ setprop_bin=resetprop
     launched = 'SETPROP ctl.start vendor.keymint-qti' in proc.stdout
     assert launched == allowed and (proc.returncode == 0) == allowed, proc
     if allowed:
-        assert 'RESETPROP ro.bootimage.build.version.security_patch 2026-09-01' in proc.stdout
+        assert 'RESETPROP ro.bootimage.build.version.security_patch 2026-10-01' in proc.stdout
     rows.append({'release': release, 'system_patch': system_patch,
                  'vendor_patch': vendor_patch, 'reset_fails': reset_fails,
                  'keymint_started': launched, 'passed': True})

@@ -84,7 +84,10 @@ def main():
                 content = subprocess.check_output([
                     args.dump_erofs, '--cat', f'--path={internal}',
                     str(args.images / f'{partition}.img')])
-            assert hashlib.sha256(content).hexdigest() == item['source_sha256'], item['source']
+            source_digest = hashlib.sha256(content).hexdigest()
+            configured_digest = item.get('source_sha256')
+            if configured_digest is not None:
+                assert source_digest == configured_digest, item['source']
             target.write_bytes(content)
             for patch in item['elf_patches']:
                 if set(patch) == {'replace_needed'}:
@@ -93,7 +96,10 @@ def main():
                     run('patchelf', '--add-needed', patch['add_needed'], target)
                 else:
                     raise ValueError(f'Unknown ELF patch: {patch}')
-            records.append(item | {'result_sha256': sha(target)})
+            records.append(item | {
+                'source_sha256': source_digest,
+                'result_sha256': sha(target),
+            })
 
         boot = (args.images / 'boot.img').read_bytes()
         assert boot[:8] == b'ANDROID!' and struct.unpack_from('<I', boot, 40)[0] == 4

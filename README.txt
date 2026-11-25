@@ -1,6 +1,6 @@
 Xiaomi 15 (dada) — OS4 experimental TWRP
 
-Target: Global OS4.0.0.11.XOCMIXM, Android 17, September 2026 security patch.
+Target: EEA OS4.0.8.0.XOCEUXM, Android 17, October 2026 security patch.
 This is an experimental device port based on the pinned TWRP-Test twrp-16.0
 source, not an official TWRP release or a fully validated Android 17 recovery.
 
@@ -16,12 +16,13 @@ only when running on an ephemeral GitHub-hosted runner. No paid runner is used.
 The preflight stops if insufficient disk space remains. Artifacts expire in
 7 days; download the image and reports after a successful build.
 
-The first local build completed, but inspection found missing dependencies of
-the updated stock libqdutils. This workflow includes those libraries and their
-transitive graphics dependencies from the same stock vendor image (155 stock
-hardware files total). It also includes mi_product mount configuration, verified
-OS4 firmware/modules, and a KeyMint initialization gate for the target version.
-The default network ADB listener on TCP 5555 is disabled.
+This EEA variant is derived from the upstream workflow that completed successful
+Global OS4 builds. It includes the updated libqdutils dependency closure and its
+transitive graphics dependencies from the matching EEA stock images (155 stock
+hardware files total). The full OTA payload and all source partition images are
+locked by SHA-256; per-file hashes are recorded during Linux extraction. It also
+includes mi_product mount configuration and a KeyMint initialization gate for
+this exact EEA build. The default network ADB listener on TCP 5555 is disabled.
 
 Source pins:
   Device: YuKongA/twrp_device_xiaomi_sm8750_thales

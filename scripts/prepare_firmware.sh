@@ -6,17 +6,15 @@ build_root="${RUNNER_TEMP:?}/dada-os4-build"
 [[ ! -e "$build_root/device" && ! -e "$build_root/firmware.zip" ]]
 mkdir -p "$build_root" "$project/artifacts"
 cd "$build_root"
-version=OS4.0.0.11.XOCMIXM
-package=dada_global-ota_full-OS4.0.0.11.XOCMIXM-user-17.0-19e034272e.zip
+version=OS4.0.8.0.XOCEUXM
+package=dada_eea_global-ota_full-OS4.0.8.0.XOCEUXM-user-17.0-be0cdec0af.zip
 timeout 25m aria2c --split=16 --max-connection-per-server=16 --min-split-size=4M \
   --file-allocation=none --connect-timeout=15 --timeout=30 \
   --lowest-speed-limit=128K --max-tries=3 --retry-wait=5 \
   --auto-file-renaming=false --allow-overwrite=true \
   --console-log-level=warn --summary-interval=30 --download-result=full \
-  --out=firmware.zip "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/$version/$package" \
-  "https://hugeota.d.miui.com/$version/$package" \
-  "https://bigota.d.miui.com/$version/$package"
-[[ "$(stat -c %s firmware.zip)" == 8766363938 ]]
+  --out=firmware.zip "https://bkt-sgp-miui-ota-update-alisgp.oss-ap-southeast-1.aliyuncs.com/$version/$package"
+[[ "$(stat -c %s firmware.zip)" == 8829905205 ]]
 python3 "$project/scripts/extract_payload.py" --package firmware.zip \
   --output extracted --expected "$project/config/payload-images.json"
 git init -q erofs-utils

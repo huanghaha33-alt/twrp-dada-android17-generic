@@ -52,13 +52,13 @@ assert any(line.startswith('mi_product ') and 'slotselect' in line and 'logical'
 assert 'wrappedkey_v0' in fstab and 'metadata_encryption=' in fstab
 props = '\n'.join(e['data'].decode(errors='replace') for n, e in entries.items()
                   if n.endswith(('.prop', 'prop.default')))
-assert 'ro.twrp.port.target=OS4.0.0.11.XOCMIXM' in props
+assert 'ro.twrp.port.target=OS4.0.8.0.XOCEUXM' in props
 assert 'ro.twrp.port.status=experimental' in props
 assert 'service.adb.tcp.port=5555' not in props, 'Unrequested network ADB default'
 prepdecrypt = required('odm/bin/prepdecrypt.sh').decode()
 keymint_rc = required('vendor/etc/init/android.hardware.security.keymint-service-qti.rc').decode()
 assert 'OS4 port: refusing KeyMint with unexpected platform properties.' in prepdecrypt
-assert 'ro.bootimage.build.version.security_patch)" != "2026-09-01"' in prepdecrypt
+assert 'ro.bootimage.build.version.security_patch)" != "2026-10-01"' in prepdecrypt
 assert any(line.strip() == 'disabled' for line in keymint_rc.splitlines())
 assert 'setprop prepdecrypt.setpatch true' in required('init.recovery.qcom.rc').decode()
 

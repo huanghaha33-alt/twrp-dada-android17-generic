@@ -7,9 +7,9 @@ index ccc9015..b47d6f1 100644
  TW_CUSTOM_CPU_TEMP_PATH := "/sys/class/thermal/thermal_zone1/temp" # CPU-0-0-0
  TW_BACKUP_EXCLUSIONS := /data/fonts,/data/adb/ap,/data/adb/ksu
 +
-+# OS4.0.0.11.XOCMIXM (dada only), experimental local port.
++# OS4.0.8.0.XOCEUXM (dada only), experimental EU port.
 +AB_OTA_PARTITIONS += recovery mi_ext mi_product
-+TW_DEVICE_VERSION := dada-OS4-exp1
++TW_DEVICE_VERSION := dada-OS4-EU408-exp1
 diff --git a/recovery.fstab b/recovery.fstab
 index b91486b..46edbd0 100644
 --- a/recovery.fstab
@@ -37,11 +37,11 @@ index 9ce2b5d..3acccd3 100644
 +# only after the installed system and verified boot patch values match.
 +# A blocked check leaves decryption unavailable without upgrading stored keys.
  start_crypto_services() {
-+	# This image is specifically for the verified OS4.0.0.11 payload. Never
++	# This image is specifically for the verified OS4.0.8.0 EU payload. Never
 +	# configure KeyMint using TWRP's fallback OS 99 / patch level 2099 values.
 +	if [ "$(getprop ro.build.version.release)" != "17" ] ||
-+	   [ "$(getprop ro.build.version.security_patch)" != "2026-09-01" ] ||
-+	   [ "$(getprop ro.vendor.build.security_patch)" != "2026-09-01" ]; then
++	   [ "$(getprop ro.build.version.security_patch)" != "2026-10-01" ] ||
++	   [ "$(getprop ro.vendor.build.security_patch)" != "2026-10-01" ]; then
 +		log_print 0 "OS4 port: refusing KeyMint with unexpected platform properties."
 +		setprop twrp.port.crypto_blocked 1
 +		setprop crypto.ready 0
@@ -49,8 +49,8 @@ index 9ce2b5d..3acccd3 100644
 +	fi
 +	# Taken from com.android.build.boot.security_patch in the stock boot AVB
 +	# metadata, not from the build tree's deliberately synthetic defaults.
-+	$setprop_bin ro.bootimage.build.version.security_patch 2026-09-01
-+	if [ "$(getprop ro.bootimage.build.version.security_patch)" != "2026-09-01" ]; then
++	$setprop_bin ro.bootimage.build.version.security_patch 2026-10-01
++	if [ "$(getprop ro.bootimage.build.version.security_patch)" != "2026-10-01" ]; then
 +		log_print 0 "OS4 port: boot patch property could not be set correctly."
 +		setprop twrp.port.crypto_blocked 1
 +		setprop crypto.ready 0
@@ -89,7 +89,7 @@ index 9739d29..39eadab 100644
  "dada")
      model="$base_name"
 -    resetprop ro.twrp.device_version "Xiaomi_15"
-+    resetprop ro.twrp.device_version "Xiaomi_15_OS4_exp1"
++    resetprop ro.twrp.device_version "Xiaomi_15_OS4_EU408_exp1"
      resetprop ro.twrp.y_offset "111"
      resetprop ro.twrp.h_offset "-111"
      resetprop vendor.display.enable_spr "1"
@@ -116,5 +116,5 @@ index 01da1f2..dc4a8bf 100644
 -service.adb.tcp.port=5555
 +
 +# Identify this device-specific experimental build.
-+ro.twrp.port.target=OS4.0.0.11.XOCMIXM
++ro.twrp.port.target=OS4.0.8.0.XOCEUXM
 +ro.twrp.port.status=experimental

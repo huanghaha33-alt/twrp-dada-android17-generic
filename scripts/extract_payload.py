@@ -34,7 +34,7 @@ def fields(data):
 
 with zipfile.ZipFile(PACKAGE) as z:
  meta=dict(line.split('=',1) for line in z.read('META-INF/com/android/metadata').decode().splitlines() if '=' in line)
- assert meta['pre-device']=='dada' and '/dada_global/' in meta['post-build'] and meta['post-sdk-level']=='37'
+ assert meta['pre-device']=='dada' and '/dada_eea_global/' in meta['post-build'] and meta['post-sdk-level']=='37'
  info=z.getinfo('payload.bin');assert info.compress_type==zipfile.ZIP_STORED
  with PACKAGE.open('rb') as f:
   f.seek(info.header_offset);local=f.read(30);assert local[:4]==b'PK\x03\x04'
@@ -79,7 +79,7 @@ for part in parts:
  assert part['size'] == expected[part['name']]['size'], part['name'] + ' unexpected size'
  assert part['sha256'] == expected[part['name']]['sha256'], part['name'] + ' unexpected hash'
 logical={name for group in groups for name in group['partitions']}
-inventory={'package':str(PACKAGE),'version':'OS4.0.0.11.XOCMIXM','device':'dada','target_slot':'b','block_size':block_size,'groups':groups,'total_image_bytes':sum(p['size'] for p in parts),'logical_image_bytes':sum(p['size'] for p in parts if p['name'] in logical),'partitions':[{k:v for k,v in p.items() if k!='operations'}|{'logical':p['name'] in logical,'path':str(IMAGES/(p['name']+'.img'))} for p in parts]}
+inventory={'package':str(PACKAGE),'version':'OS4.0.8.0.XOCEUXM','device':'dada','target_slot':'b','block_size':block_size,'groups':groups,'total_image_bytes':sum(p['size'] for p in parts),'logical_image_bytes':sum(p['size'] for p in parts if p['name'] in logical),'partitions':[{k:v for k,v in p.items() if k!='operations'}|{'logical':p['name'] in logical,'path':str(IMAGES/(p['name']+'.img'))} for p in parts]}
 (OUT/'manifest.json').write_text(json.dumps(inventory,indent=2),encoding='utf-8')
 print(json.dumps({'images':str(IMAGES),'partitions':len(parts),'image_bytes':inventory['total_image_bytes'],'logical_image_bytes':inventory['logical_image_bytes'],'groups':groups}),flush=True)
 lock=threading.Lock();stop=threading.Event();progress=[0];completed=[];start=time.monotonic()
