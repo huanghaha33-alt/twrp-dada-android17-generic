@@ -20,7 +20,10 @@ for item in 'prebuilts/clang/host/linux-x86:clang' 'prebuilts/rust:rust'; do
   mkdir -p "$gitdir/info"
   cp "$project/config/$config-sparse-checkout" "$gitdir/info/sparse-checkout"
 done
-python3 "$repo" sync -l -c -j4 --fail-fast
+if ! python3 "$repo" sync -l -c -j4 --fail-fast; then
+  echo 'Parallel local checkout failed; retrying once serially.' >&2
+  python3 "$repo" sync -l -c -j1 --fail-fast
+fi
 actual_revision="$(git -C .repo/repo rev-parse HEAD)"
 if [[ "$actual_revision" != "$repo_revision" ]]; then
   echo "Unexpected installed repo tool revision: $actual_revision (expected $repo_revision)" >&2
